@@ -3,7 +3,7 @@ import Layout from '../components/Layout';
 import AttendanceForm from '../components/AttendanceForm';
 import AttendanceList from '../components/AttendanceList';
 import { attendanceService, employeeService } from '../services/api';
-import { Clock, History, AlertCircle } from 'lucide-react';
+import { Clock, History, Search, Filter } from 'lucide-react';
 
 const Attendance = () => {
     const [employees, setEmployees] = useState([]);
@@ -13,6 +13,8 @@ const Attendance = () => {
     const [marking, setMarking] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     useEffect(() => {
         fetchEmployees();
@@ -39,6 +41,16 @@ const Attendance = () => {
             setLoading(false);
         }
     };
+
+    const filteredAttendance = attendance.filter(record => {
+        if (!startDate && !endDate) return true;
+        const d = new Date(record.date);
+        const s = startDate ? new Date(startDate) : null;
+        const e = endDate ? new Date(endDate) : null;
+        if (s && d < s) return false;
+        if (e && d > e) return false;
+        return true;
+    });
 
     const handleMarkAttendance = async (formData) => {
         setMarking(true);
@@ -71,47 +83,47 @@ const Attendance = () => {
 
     return (
         <Layout>
-            <div className="mb-10">
-                <h1 className="text-3xl font-bold text-slate-900 mb-1">Attendance Management</h1>
-                <p className="text-slate-500 font-medium tracking-tight">Keep track of daily presence and history.</p>
+            <div className="mb-8">
+                <h1 className="text-3xl font-black text-slate-900 mb-1">Attendance</h1>
+                <p className="text-slate-400 text-[15px] font-medium tracking-tight">Track and monitor daily employee presence.</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-1 space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div className="lg:col-span-4 space-y-6">
                     <AttendanceForm onMark={handleMarkAttendance} employees={employees} />
 
                     {success && (
-                        <div className="p-4 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-2xl flex items-center gap-3">
-                            <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                            <p className="text-sm font-semibold">{success}</p>
+                        <div className="p-4 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                            <p className="text-sm font-bold">{success}</p>
                         </div>
                     )}
 
                     {error && (
-                        <div className="p-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl flex items-center gap-3">
-                            <div className="w-2 h-2 bg-rose-500 rounded-full"></div>
-                            <p className="text-sm font-semibold">{error}</p>
+                        <div className="p-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                            <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse"></div>
+                            <p className="text-sm font-bold">{error}</p>
                         </div>
                     )}
                 </div>
 
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm min-h-[400px]">
-                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 pb-6 border-b border-slate-100">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-slate-900 rounded-lg text-white">
-                                    <History size={18} />
-                                </div>
-                                <h2 className="text-xl font-bold text-slate-900">Attendance History</h2>
-                            </div>
+                <div className="lg:col-span-8 space-y-6">
+                    {/* Employee Records Filter Card */}
+                    <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm shadow-slate-100/50">
+                        <div className="flex items-center gap-3 mb-8">
+                            <Search size={18} className="text-slate-400" />
+                            <h2 className="text-lg font-black text-slate-800">Employee Records</h2>
+                        </div>
 
-                            <div className="w-full md:w-64">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="md:col-span-2">
+                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Select Employee</label>
                                 <select
-                                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium"
+                                    className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all text-sm font-medium text-slate-600 appearance-none"
                                     value={selectedEmployeeId}
                                     onChange={(e) => setSelectedEmployeeId(e.target.value)}
                                 >
-                                    <option value="">Select Employee to View</option>
+                                    <option value="">Choose an employee...</option>
                                     {employees.map(emp => (
                                         <option key={emp._id} value={emp.employeeId}>
                                             {emp.fullName}
@@ -119,17 +131,48 @@ const Attendance = () => {
                                     ))}
                                 </select>
                             </div>
+                            <div>
+                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Start Date</label>
+                                <input
+                                    type="date"
+                                    className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all text-sm font-medium text-slate-400"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">End Date</label>
+                                <input
+                                    type="date"
+                                    className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all text-sm font-medium text-slate-400"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                />
+                            </div>
                         </div>
+                    </div>
 
+                    {/* Attendance History Card */}
+                    <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm shadow-slate-100/50 min-h-[420px] flex flex-col">
                         {selectedEmployeeId ? (
-                            <AttendanceList attendance={attendance} loading={loading} />
-                        ) : (
-                            <div className="flex flex-col items-center justify-center p-20 text-center">
-                                <div className="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mb-4">
-                                    <Clock size={32} />
+                            <>
+                                <div className="flex items-center gap-3 mb-10 pb-6 border-b border-slate-50">
+                                    <div className="p-2.5 bg-slate-900 rounded-xl text-white shadow-lg shadow-slate-200">
+                                        <History size={18} />
+                                    </div>
+                                    <h2 className="text-xl font-black text-slate-800">Attendance History</h2>
                                 </div>
-                                <h3 className="text-lg font-bold text-slate-900 mb-1">Select an Employee</h3>
-                                <p className="text-slate-500 text-sm max-w-xs">Select an employee from the dropdown above to view their detailed attendance history.</p>
+                                <AttendanceList attendance={filteredAttendance} loading={loading} />
+                            </>
+                        ) : (
+                            <div className="flex-1 flex flex-col items-center justify-center p-10 text-center">
+                                <div className="w-24 h-24 bg-slate-50 text-slate-200 rounded-full flex items-center justify-center mb-6 border border-slate-100/50">
+                                    <Filter size={42} />
+                                </div>
+                                <h3 className="text-2xl font-black text-slate-800 mb-2">Select an employee</h3>
+                                <p className="text-slate-400 text-sm font-medium max-w-[280px] leading-relaxed">
+                                    Choose an employee from the dropdown above to view their attendance history.
+                                </p>
                             </div>
                         )}
                     </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, Clock, Terminal } from 'lucide-react';
+import { LayoutDashboard, Users, Clock, Building2, LogOut } from 'lucide-react';
 
 const Navbar = () => {
     const navItems = [
@@ -10,38 +10,53 @@ const Navbar = () => {
     ];
 
     return (
-        <nav className="fixed left-0 top-0 h-full w-64 bg-white border-r border-slate-200 p-6 z-50">
-            <div className="flex items-center gap-3 mb-10 px-2">
-                <div className="p-2 bg-indigo-600 rounded-lg text-white">
-                    <Terminal size={24} />
+        <nav className="fixed left-0 top-0 h-full w-68 bg-white border-r border-slate-100 flex flex-col z-50">
+            {/* Logo Section */}
+            <div className="p-6 mb-2">
+                <div className="flex items-center gap-3 px-2">
+                    <div className="p-2 bg-blue-600 rounded-lg text-white shadow-lg shadow-blue-100">
+                        <Building2 size={22} />
+                    </div>
+                    <h1 className="text-xl font-black text-slate-800 tracking-tight">HRMS Lite</h1>
                 </div>
-                <h1 className="text-xl font-bold text-slate-900 tracking-tight">HRMS <span className="text-indigo-600">Lite</span></h1>
             </div>
 
-            <div className="space-y-1">
-                {navItems.map((item) => (
-                    <NavLink
-                        key={item.to}
-                        to={item.to}
-                        className={({ isActive }) =>
-                            `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
-                                ? 'bg-indigo-50 text-indigo-600 font-semibold'
-                                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
-                            }`
-                        }
-                    >
-                        {item.icon}
-                        <span>{item.label}</span>
-                    </NavLink>
-                ))}
+            {/* Navigation Menu */}
+            <div className="flex-1 px-4 space-y-6">
+                <div>
+                    <h2 className="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">Main Menu</h2>
+                    <div className="space-y-1.5">
+                        {navItems.map((item) => (
+                            <NavLink
+                                key={item.to}
+                                to={item.to}
+                                className={({ isActive }) =>
+                                    `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group ${isActive
+                                        ? 'bg-blue-600 text-white shadow-md shadow-blue-200'
+                                        : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+                                    }`
+                                }
+                            >
+                                <span className="transition-transform duration-300 group-hover:scale-110">{item.icon}</span>
+                                <span className="text-[14px] font-medium">{item.label}</span>
+                            </NavLink>
+                        ))}
+                    </div>
+                </div>
             </div>
 
-            <div className="absolute bottom-8 left-6 right-6">
-                <div className="p-4 bg-slate-900 rounded-2xl text-white">
-                    <p className="text-xs text-slate-400 font-medium mb-1">Status</p>
-                    <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                        <p className="text-sm font-semibold">System Online</p>
+            {/* Profile Section */}
+            <div className="p-4 mt-auto border-t border-slate-50">
+                <div className="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors cursor-pointer group">
+                    <div className="relative">
+                        <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-inner group-hover:scale-105 transition-transform">
+                            AD
+                        </div>
+                        <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-slate-800 truncate">Admin User</p>
+                        <p className="text-[11px] text-slate-400 font-medium truncate">admin@hrms.local</p>
                     </div>
                 </div>
             </div>

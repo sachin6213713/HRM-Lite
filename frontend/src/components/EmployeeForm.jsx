@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, User, Mail, Building, CreditCard } from 'lucide-react';
 
 const EmployeeForm = ({ onAdd, onCancel }) => {
     const [formData, setFormData] = useState({
@@ -14,79 +13,101 @@ const EmployeeForm = ({ onAdd, onCancel }) => {
         onAdd(formData);
     };
 
+    const inputClasses = "w-full px-4 py-3 rounded-xl bg-slate-50/50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all text-[13px] font-medium placeholder:text-slate-300";
+    const labelClasses = "flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2";
+
     return (
-        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-slate-900">Add New Employee</h2>
-                <button onClick={onCancel} className="text-slate-400 hover:text-slate-600 transition-colors">
-                    <X size={20} />
+        <div className="bg-white rounded-[32px] overflow-hidden shadow-2xl shadow-slate-200/50 border border-slate-100">
+            <div className="flex justify-between items-center p-8 pb-4">
+                <h2 className="text-xl font-black text-slate-800">Add New Employee</h2>
+                <button onClick={onCancel} className="p-2 text-slate-300 hover:text-slate-600 transition-colors hover:bg-slate-50 rounded-xl">
+                    <X size={18} />
                 </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="p-8 pt-0 space-y-6">
                 <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Employee ID</label>
+                    <label className={labelClasses}>
+                        <CreditCard size={14} className="text-slate-400" />
+                        Employee ID
+                    </label>
                     <input
                         type="text"
                         required
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                        placeholder="e.g. EMP101"
+                        className={inputClasses}
+                        placeholder="e.g. EMP-001"
                         value={formData.employeeId}
                         onChange={(e) => setFormData({ ...formData, employeeId: e.target.value })}
                     />
                 </div>
+
                 <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Full Name</label>
+                    <label className={labelClasses}>
+                        <User size={14} className="text-slate-400" />
+                        Full Name
+                    </label>
                     <input
                         type="text"
                         required
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                        placeholder="e.g. John Doe"
+                        className={inputClasses}
+                        placeholder="John Doe"
                         value={formData.fullName}
                         onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                     />
                 </div>
+
                 <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email Email Address</label>
+                    <label className={labelClasses}>
+                        <Mail size={14} className="text-slate-400" />
+                        Email Address
+                    </label>
                     <input
                         type="email"
                         required
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                        placeholder="e.g. john@example.com"
+                        className={inputClasses}
+                        placeholder="john@example.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
                 </div>
+
                 <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Department</label>
-                    <select
+                    <label className={labelClasses}>
+                        <Building size={14} className="text-slate-400" />
+                        Department
+                    </label>
+                    <input
+                        type="text"
+                        list="departments"
                         required
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                        className={inputClasses}
+                        placeholder="Engineering"
                         value={formData.department}
                         onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                    >
-                        <option value="">Select Department</option>
-                        <option value="Engineering">Engineering</option>
-                        <option value="Design">Design</option>
-                        <option value="Marketing">Marketing</option>
-                        <option value="Sales">Sales</option>
-                        <option value="HR">HR</option>
-                    </select>
+                    />
+                    <datalist id="departments">
+                        <option value="Engineering" />
+                        <option value="Product" />
+                        <option value="Design" />
+                        <option value="Marketing" />
+                        <option value="Human Resources" />
+                    </datalist>
                 </div>
 
-                <div className="pt-4 flex gap-3">
-                    <button
-                        type="submit"
-                        className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg shadow-indigo-200 hover:shadow-indigo-300"
-                    >
-                        Add Employee
-                    </button>
+                <div className="pt-4 flex items-center justify-end gap-6">
                     <button
                         type="button"
                         onClick={onCancel}
-                        className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3 px-4 rounded-xl transition-all"
+                        className="text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors"
                     >
                         Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-black py-4 px-8 rounded-2xl transition-all shadow-xl shadow-blue-100 group"
+                    >
+                        <Plus size={18} className="transition-transform group-hover:rotate-90" />
+                        <span>Save Employee</span>
                     </button>
                 </div>
             </form>
